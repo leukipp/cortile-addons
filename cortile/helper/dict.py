@@ -34,7 +34,4 @@ class Dict(dict):
         self.__delitem__(item)
 
     def __str__(self):
-        return self.str(self.__class__.__name__)
-
-    def str(self, name):
-        return f'{name}({", ".join(f"{k}={v}" for k, v in self.items())})'
+        return json.dumps(self, indent=2)
