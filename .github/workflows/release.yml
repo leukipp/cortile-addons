@@ -16,6 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: System Setup
+        run: |
+          sudo apt update
+          sudo apt install build-essential libpython3-dev libdbus-1-dev
+
       - name: Python Setup ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
