@@ -1,0 +1,7 @@
+dist/
+docs/
+*.py[cod]
+__pycache__/
+.pytest_cache/
+*.so
+*~

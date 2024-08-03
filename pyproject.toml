@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cortile"
+version = "0.0.1"
+description = "Python bindings for the linux auto tiling manager cortile."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "leukipp" }]
+keywords = ["x11", "dbus"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+]
+requires-python = ">=3.8"
+dependencies = ["dbus-python>=1.3.2"]
+
+[project.urls]
+Repository = "https://github.com/leukipp/cortile-addons"
+
+[project.optional-dependencies]
+tests = ["pytest>=8.0.0"]
+build = ["hatch>=1.12.0"]
+dev = ["cortile[tests,build]"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [".git", ".github", ".vscode", "docs"]
