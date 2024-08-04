@@ -31,11 +31,11 @@ class Logger(object):
         RESET='\033[0m'
     )
 
-    def __init__(self, level=2):
+    def __init__(self, level: int = 2):
         self.level = level
         self.pid = os.getpid()
 
-    def color(self, level):
+    def color(self, level: str) -> Dict:
         return Dict(
             DEBUG=self.COLORS.GRAY,
             INFO=self.COLORS.CYAN,
@@ -44,7 +44,7 @@ class Logger(object):
             FATAL=self.COLORS.RED
         )[level]
 
-    def prefix(self, level, colored=True):
+    def prefix(self, level: str, colored: bool = True) -> str:
         time = f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
         pid = f'{self.pid}'
         context = f'{level}'
@@ -54,24 +54,24 @@ class Logger(object):
             context = f'{self.color(level)}{context}{self.COLORS.RESET}'
         return f'{time} | {pid} | {context}'
 
-    def log(self, level, text):
+    def log(self, level: str, text: str) -> None:
         if not (self.LEVELS[level] >= self.level):
             return
         print(f'{self.prefix(level, True)} | {text}')
         syslog.syslog(f'{self.prefix(level, False)} | {text}'.replace('\n', ' '))
 
-    def debug(self, text):
+    def debug(self, text: str) -> None:
         self.log('DEBUG', text)
 
-    def info(self, text):
+    def info(self, text: str) -> None:
         self.log('INFO', text)
 
-    def warn(self, text):
+    def warn(self, text: str) -> None:
         self.log('WARN', text)
 
-    def error(self, text):
+    def error(self, text: str) -> None:
         self.log('ERROR', text)
 
-    def fatal(self, text):
+    def fatal(self, text: str) -> None:
         self.log('FATAL', text)
         sys.exit()

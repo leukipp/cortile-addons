@@ -4,7 +4,7 @@ import json
 
 
 class Dict(dict):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: object, **kwargs: object):
         super().__init__(*args, **kwargs)
         for arg in args:
             if not isinstance(arg, dict):
@@ -21,17 +21,17 @@ class Dict(dict):
                 self[k] = v
 
     @staticmethod
-    def from_json(str):
+    def from_json(str: str) -> object:
         return Dict(json.loads(str))
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str) -> object:
         return self.__getitem__(attr)
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, key: str, value: object) -> None:
         self.__setitem__(key, value)
 
-    def __delattr__(self, item):
+    def __delattr__(self, item: str) -> None:
         self.__delitem__(item)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return json.dumps(self, indent=2)
