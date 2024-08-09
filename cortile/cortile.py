@@ -13,10 +13,21 @@ class Cortile(object):
     def __init__(self, log: int = Logger.LEVELS.WARN):
         """
         Initialize the cortile connector.
+        This main class wraps methods of the base connector and should be
+        used as primary interface to communicate with a running cortile instance.
 
         :param log: Logging level, default is warn
         """
         self.connector = Connector(log)
+
+    @property
+    def log(self) -> Logger:
+        """
+        Return the logger instance.
+
+        :return: Logger instance that writes to syslog
+        """
+        return self.connector.log
 
     def listen(self, callback: Callable[[Dict], None] | None) -> None:
         """
@@ -32,20 +43,15 @@ class Cortile(object):
 
         :param sleep: Time to sleep in between, default is 0.5 seconds
         """
-        while not self.connector.exit():
+        while not self.connector.exit:
             time.sleep(sleep)
+        self.close()
 
-    def get_active_layouts(self) -> Iterator[Dict]:
+    def close(self) -> None:
         """
-        Get the active layouts from the workspaces.
-
-        :return: Iterator of active layouts with tiling enabled
+        Close the connection gracefully.
         """
-        workspaces = self.connector.property('Workspaces')
-        for workspace in workspaces.Values if workspaces else []:
-            if workspace and workspace.Tiling:
-                yield workspace.Layouts[workspace.ActiveLayoutNum]
-        return
+        self.connector.close()
 
     def get_active_layout(self) -> Dict | None:
         """
@@ -54,12 +60,26 @@ class Cortile(object):
         :return: Active layout with tiling enabled or None
         """
         workplace = self.connector.property('Workplace')
+        if not workplace:
+            return None
         for layout in self.get_active_layouts():
-            if not layout or not workplace:
-                return None
             if layout.Location.DeskNum == workplace.CurrentDesk and layout.Location.ScreenNum == workplace.CurrentScreen:
                 return layout
         return None
+
+    def get_active_layouts(self) -> Iterator[Dict]:
+        """
+        Get the active layouts from the workspaces.
+
+        :return: Iterator of active layouts with tiling enabled
+        """
+        workspaces = self.connector.property('Workspaces')
+        if not workspaces:
+            return
+        for workspace in workspaces.Values:
+            if workspace.Tiling:
+                yield workspace.Layouts[workspace.ActiveLayoutNum]
+        return
 
     def get_active_client(self) -> Dict | None:
         """
@@ -67,14 +87,28 @@ class Cortile(object):
 
         :return: Active client or None
         """
-        windows = self.get_windows()
         clients = self.get_clients()
-        if not windows or not clients:
-            return None
+        windows = self.get_windows()
         for client in clients:
-            if windows.Active.Id == client.Window.Id:
+            if windows and windows.Active.Id == client.Window.Id:
                 return client
         return None
+
+    def get_active_clients(self) -> Iterator[Dict]:
+        """
+        Get information of clients on the current active screen.
+
+        :return: Iterator of tracked clients on the current screen
+        """
+        clients = self.connector.property('Clients')
+        workplace = self.connector.property('Workplace')
+        if not clients or not workplace:
+            return
+        for client in clients.Values:
+            location = client.Latest.Location
+            if location.DeskNum == workplace.CurrentDesk and location.ScreenNum == workplace.CurrentScreen:
+                yield client
+        return
 
     def get_active_workspace(self) -> int | None:
         """
@@ -120,7 +154,7 @@ class Cortile(object):
             return None
         return workplace.ScreenCount
 
-    def get_workspace_dimensions(self) -> List[Dict] | None:
+    def get_workspace_dimensions(self) -> List[Dict]:
         """
         Get the dimensions of all workspaces.
 
@@ -128,10 +162,10 @@ class Cortile(object):
         """
         workplace = self.connector.property('Workplace')
         if not workplace:
-            return None
+            return []
         return workplace.Displays.Desktops
 
-    def get_screen_dimensions(self) -> List[Dict] | None:
+    def get_screen_dimensions(self) -> List[Dict]:
         """
         Get the dimensions of all screens.
 
@@ -139,12 +173,23 @@ class Cortile(object):
         """
         workplace = self.connector.property('Workplace')
         if not workplace:
-            return None
+            return []
         return workplace.Displays.Screens
+
+    def get_clients(self) -> List[Dict]:
+        """
+        Get all the clients information.
+
+        :return: List of tracked clients or None
+        """
+        clients = self.connector.property('Clients')
+        if not clients:
+            return []
+        return clients.Values
 
     def get_windows(self) -> Dict | None:
         """
-        Get the windows information.
+        Get all the windows information.
 
         :return: List of tracked window ids or None
         """
@@ -152,17 +197,6 @@ class Cortile(object):
         if not windows:
             return None
         return windows
-
-    def get_clients(self) -> List[Dict] | None:
-        """
-        Get the clients information.
-
-        :return: List of tracked clients or None
-        """
-        clients = self.connector.property('Clients')
-        if not clients:
-            return None
-        return clients.Values
 
     def desktop_switch(self, desk: int) -> bool:
         """
