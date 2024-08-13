@@ -29,9 +29,7 @@ Homepage = "https://github.com/leukipp/cortile"
 Repository = "https://github.com/leukipp/cortile-addons"
 
 [project.optional-dependencies]
-tests = ["pytest>=8.0.0"]
 build = ["hatch>=1.12.0"]
-dev = ["cortile[tests,build]"]
 
 [tool.hatch.build.targets.sdist]
-exclude = [".git", ".github", ".vscode", "docs"]
+exclude = [".git", ".github", ".vscode"]

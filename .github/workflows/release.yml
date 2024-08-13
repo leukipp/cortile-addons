@@ -28,8 +28,7 @@ jobs:
 
       - name: Package Setup
         run: |
-          python -c "import sys; print(sys.version)"
-          python -m pip install -v -e .[dev]
+          python -m pip install -v -e .
 
       - name: Build Python Package
         run: |
