@@ -13,10 +13,21 @@ class Cortile(object):
     def __init__(self, log: int = Logger.LEVELS.WARN):
         """
         Initialize the cortile connector.
+        This main class wraps methods of the base connector and should be
+        used as primary interface to communicate with a running cortile instance.
 
         :param log: Logging level, default is warn
         """
         self.connector = Connector(log)
+
+    @property
+    def log(self) -> Logger:
+        """
+        Return the logger instance.
+
+        :return: Logger instance that writes to syslog
+        """
+        return self.connector.log
 
     def listen(self, callback: Callable[[Dict], None] | None) -> None:
         """
@@ -32,8 +43,29 @@ class Cortile(object):
 
         :param sleep: Time to sleep in between, default is 0.5 seconds
         """
-        while not self.connector.exit():
+        while self.connector.connected and not self.connector.exit:
             time.sleep(sleep)
+        self.close()
+
+    def close(self) -> None:
+        """
+        Close the connection gracefully.
+        """
+        self.connector.close()
+
+    def get_active_layout(self) -> Dict | None:
+        """
+        Get the active layout for the current desktop and screen.
+
+        :return: Active layout with tiling enabled or None
+        """
+        workplace = self.connector.property('Workplace')
+        if not workplace:
+            return None
+        for layout in self.get_active_layouts():
+            if layout.Location.Desktop == workplace.CurrentDesktop and layout.Location.Screen == workplace.CurrentScreen:
+                return layout
+        return None
 
     def get_active_layouts(self) -> Iterator[Dict]:
         """
@@ -42,24 +74,12 @@ class Cortile(object):
         :return: Iterator of active layouts with tiling enabled
         """
         workspaces = self.connector.property('Workspaces')
-        for workspace in workspaces.Values if workspaces else []:
-            if workspace and workspace.Tiling:
-                yield workspace.Layouts[workspace.ActiveLayoutNum]
+        if not workspaces:
+            return
+        for workspace in workspaces.Values:
+            if workspace.Tiling:
+                yield workspace.Layouts[workspace.Layout]
         return
-
-    def get_active_layout(self) -> Dict | None:
-        """
-        Get the active layout for the current desk and screen.
-
-        :return: Active layout with tiling enabled or None
-        """
-        workplace = self.connector.property('Workplace')
-        for layout in self.get_active_layouts():
-            if not layout or not workplace:
-                return None
-            if layout.Location.DeskNum == workplace.CurrentDesk and layout.Location.ScreenNum == workplace.CurrentScreen:
-                return layout
-        return None
 
     def get_active_client(self) -> Dict | None:
         """
@@ -67,14 +87,28 @@ class Cortile(object):
 
         :return: Active client or None
         """
-        windows = self.get_windows()
         clients = self.get_clients()
-        if not windows or not clients:
-            return None
+        windows = self.get_windows()
         for client in clients:
-            if windows.Active.Id == client.Window.Id:
+            if windows and windows.Active.Id == client.Window.Id:
                 return client
         return None
+
+    def get_active_clients(self) -> Iterator[Dict]:
+        """
+        Get information of clients on the current active screen.
+
+        :return: Iterator of tracked clients on the current screen
+        """
+        clients = self.connector.property('Clients')
+        workplace = self.connector.property('Workplace')
+        if not clients or not workplace:
+            return
+        for client in clients.Values:
+            location = client.Latest.Location
+            if location.Desktop == workplace.CurrentDesktop and location.Screen == workplace.CurrentScreen:
+                yield client
+        return
 
     def get_active_workspace(self) -> int | None:
         """
@@ -85,7 +119,7 @@ class Cortile(object):
         workplace = self.connector.property('Workplace')
         if not workplace:
             return None
-        return workplace.CurrentDesk
+        return workplace.CurrentDesktop
 
     def get_active_screen(self) -> int | None:
         """
@@ -107,7 +141,7 @@ class Cortile(object):
         workplace = self.connector.property('Workplace')
         if not workplace:
             return None
-        return workplace.DeskCount
+        return workplace.DesktopCount
 
     def get_screen_count(self) -> int | None:
         """
@@ -120,7 +154,7 @@ class Cortile(object):
             return None
         return workplace.ScreenCount
 
-    def get_workspace_dimensions(self) -> List[Dict] | None:
+    def get_workspace_dimensions(self) -> List[Dict]:
         """
         Get the dimensions of all workspaces.
 
@@ -128,10 +162,10 @@ class Cortile(object):
         """
         workplace = self.connector.property('Workplace')
         if not workplace:
-            return None
+            return []
         return workplace.Displays.Desktops
 
-    def get_screen_dimensions(self) -> List[Dict] | None:
+    def get_screen_dimensions(self) -> List[Dict]:
         """
         Get the dimensions of all screens.
 
@@ -139,12 +173,23 @@ class Cortile(object):
         """
         workplace = self.connector.property('Workplace')
         if not workplace:
-            return None
+            return []
         return workplace.Displays.Screens
+
+    def get_clients(self) -> List[Dict]:
+        """
+        Get all the clients information.
+
+        :return: List of tracked clients or None
+        """
+        clients = self.connector.property('Clients')
+        if not clients:
+            return []
+        return clients.Values
 
     def get_windows(self) -> Dict | None:
         """
-        Get the windows information.
+        Get all the windows information.
 
         :return: List of tracked window ids or None
         """
@@ -153,26 +198,15 @@ class Cortile(object):
             return None
         return windows
 
-    def get_clients(self) -> List[Dict] | None:
-        """
-        Get the clients information.
-
-        :return: List of tracked clients or None
-        """
-        clients = self.connector.property('Clients')
-        if not clients:
-            return None
-        return clients.Values
-
-    def desktop_switch(self, desk: int) -> bool:
+    def desktop_switch(self, desktop: int) -> bool:
         """
         Switch to a different desktop.
 
-        :param desk: Index of the desktop to switch to
+        :param desktop: Index of the desktop to switch to
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('DesktopSwitch', desk)
+        return self.connector.method('DesktopSwitch', desktop)
 
     def window_activate(self, id: int) -> bool:
         """
@@ -184,16 +218,16 @@ class Cortile(object):
         """
         return self.connector.method('WindowActivate', id)
 
-    def window_to_desktop(self, id: int, desk: int) -> bool:
+    def window_to_desktop(self, id: int, desktop: int) -> bool:
         """
         Move a window to a different desktop.
 
         :param id: Id of the window to move
-        :param desk: Index of the desktop to move the window to
+        :param desktop: Index of the desktop to move the window to
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('WindowToDesktop', id, desk)
+        return self.connector.method('WindowToDesktop', id, desktop)
 
     def window_to_position(self, id: int, x: int, y: int) -> bool:
         """
@@ -218,277 +252,277 @@ class Cortile(object):
         """
         return self.connector.method('WindowToScreen', id, screen)
 
-    def action_execute_enable(self, desk: int, screen: int) -> bool:
+    def action_execute_enable(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'enable' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'enable', desk, screen)
+        return self.connector.method('ActionExecute', 'enable', desktop, screen)
 
-    def action_execute_disable(self, desk: int, screen: int) -> bool:
+    def action_execute_disable(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'disable' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'disable', desk, screen)
+        return self.connector.method('ActionExecute', 'disable', desktop, screen)
 
-    def action_execute_toggle(self, desk: int, screen: int) -> bool:
+    def action_execute_toggle(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'toggle' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'toggle', desk, screen)
+        return self.connector.method('ActionExecute', 'toggle', desktop, screen)
 
-    def action_execute_decoration(self, desk: int, screen: int) -> bool:
+    def action_execute_decoration(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'decoration' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'decoration', desk, screen)
+        return self.connector.method('ActionExecute', 'decoration', desktop, screen)
 
-    def action_execute_restore(self, desk: int, screen: int) -> bool:
+    def action_execute_restore(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'restore' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'restore', desk, screen)
+        return self.connector.method('ActionExecute', 'restore', desktop, screen)
 
-    def action_execute_cycle_next(self, desk: int, screen: int) -> bool:
+    def action_execute_cycle_next(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'cycle_next' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'cycle_next', desk, screen)
+        return self.connector.method('ActionExecute', 'cycle_next', desktop, screen)
 
-    def action_execute_cycle_previous(self, desk: int, screen: int) -> bool:
+    def action_execute_cycle_previous(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'cycle_previous' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'cycle_previous', desk, screen)
+        return self.connector.method('ActionExecute', 'cycle_previous', desktop, screen)
 
-    def action_execute_layout_vertical_left(self, desk: int, screen: int) -> bool:
+    def action_execute_layout_vertical_left(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'layout_vertical_left' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'layout_vertical_left', desk, screen)
+        return self.connector.method('ActionExecute', 'layout_vertical_left', desktop, screen)
 
-    def action_execute_layout_vertical_right(self, desk: int, screen: int) -> bool:
+    def action_execute_layout_vertical_right(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'layout_vertical_right' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'layout_vertical_right', desk, screen)
+        return self.connector.method('ActionExecute', 'layout_vertical_right', desktop, screen)
 
-    def action_execute_layout_horizontal_top(self, desk: int, screen: int) -> bool:
+    def action_execute_layout_horizontal_top(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'layout_horizontal_top' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'layout_horizontal_top', desk, screen)
+        return self.connector.method('ActionExecute', 'layout_horizontal_top', desktop, screen)
 
-    def action_execute_layout_horizontal_bottom(self, desk: int, screen: int) -> bool:
+    def action_execute_layout_horizontal_bottom(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'layout_horizontal_bottom' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'layout_horizontal_bottom', desk, screen)
+        return self.connector.method('ActionExecute', 'layout_horizontal_bottom', desktop, screen)
 
-    def action_execute_layout_maximized(self, desk: int, screen: int) -> bool:
+    def action_execute_layout_maximized(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'layout_maximized' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'layout_maximized', desk, screen)
+        return self.connector.method('ActionExecute', 'layout_maximized', desktop, screen)
 
-    def action_execute_layout_fullscreen(self, desk: int, screen: int) -> bool:
+    def action_execute_layout_fullscreen(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'layout_fullscreen' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'layout_fullscreen', desk, screen)
+        return self.connector.method('ActionExecute', 'layout_fullscreen', desktop, screen)
 
-    def action_execute_master_make(self, desk: int, screen: int) -> bool:
+    def action_execute_master_make(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'master_make' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'master_make', desk, screen)
+        return self.connector.method('ActionExecute', 'master_make', desktop, screen)
 
-    def action_execute_master_make_next(self, desk: int, screen: int) -> bool:
+    def action_execute_master_make_next(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'master_make_next' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'master_make_next', desk, screen)
+        return self.connector.method('ActionExecute', 'master_make_next', desktop, screen)
 
-    def action_execute_master_make_previous(self, desk: int, screen: int) -> bool:
+    def action_execute_master_make_previous(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'master_make_previous' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'master_make_previous', desk, screen)
+        return self.connector.method('ActionExecute', 'master_make_previous', desktop, screen)
 
-    def action_execute_master_increase(self, desk: int, screen: int) -> bool:
+    def action_execute_master_increase(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'master_increase' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'master_increase', desk, screen)
+        return self.connector.method('ActionExecute', 'master_increase', desktop, screen)
 
-    def action_execute_master_decrease(self, desk: int, screen: int) -> bool:
+    def action_execute_master_decrease(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'master_decrease' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'master_decrease', desk, screen)
+        return self.connector.method('ActionExecute', 'master_decrease', desktop, screen)
 
-    def action_execute_slave_increase(self, desk: int, screen: int) -> bool:
+    def action_execute_slave_increase(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'slave_increase' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'slave_increase', desk, screen)
+        return self.connector.method('ActionExecute', 'slave_increase', desktop, screen)
 
-    def action_execute_slave_decrease(self, desk: int, screen: int) -> bool:
+    def action_execute_slave_decrease(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'slave_decrease' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'slave_decrease', desk, screen)
+        return self.connector.method('ActionExecute', 'slave_decrease', desktop, screen)
 
-    def action_execute_proportion_increase(self, desk: int, screen: int) -> bool:
+    def action_execute_proportion_increase(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'proportion_increase' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'proportion_increase', desk, screen)
+        return self.connector.method('ActionExecute', 'proportion_increase', desktop, screen)
 
-    def action_execute_proportion_decrease(self, desk: int, screen: int) -> bool:
+    def action_execute_proportion_decrease(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'proportion_decrease' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'proportion_decrease', desk, screen)
+        return self.connector.method('ActionExecute', 'proportion_decrease', desktop, screen)
 
-    def action_execute_window_next(self, desk: int, screen: int) -> bool:
+    def action_execute_window_next(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'window_next' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'window_next', desk, screen)
+        return self.connector.method('ActionExecute', 'window_next', desktop, screen)
 
-    def action_execute_window_previous(self, desk: int, screen: int) -> bool:
+    def action_execute_window_previous(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'window_previous' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'window_previous', desk, screen)
+        return self.connector.method('ActionExecute', 'window_previous', desktop, screen)
 
-    def action_execute_reset(self, desk: int, screen: int) -> bool:
+    def action_execute_reset(self, desktop: int, screen: int) -> bool:
         """
         Execute the 'reset' action.
 
-        :param desk: Index of the desktop
+        :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'reset', desk, screen)
+        return self.connector.method('ActionExecute', 'reset', desktop, screen)
