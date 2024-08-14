@@ -4,7 +4,7 @@ import json
 
 
 class Dict(dict):
-    def __init__(self, *args: object, **kwargs: object):
+    def __init__(self, *args: tuple[object, ...], **kwargs: dict[str, object]):
         """
         Initialize a dot notation dictionary.
         This helper class is used globally to provide simplified dictionary
