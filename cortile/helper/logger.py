@@ -128,4 +128,4 @@ class Logger(object):
         :param text: Logging text as string
         """
         self.log('FATAL', text)
-        sys.exit()
+        sys.exit(1)
