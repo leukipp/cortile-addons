@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Callable
+from typing import Callable, Tuple
 
 from cortile.helper.dict import Dict
 from cortile.helper.logger import Logger
@@ -21,7 +21,7 @@ class Connector(object):
         self.signal = Signal()
         self.session = Session()
         self.properties = Dict()
-        self.listener = [self.update]
+        self.listener = [self.observe]
         result = self.session.connect()
         if result.Type == 'Result' and result.Data.Success:
             self.log.info('Init: Connection established')
@@ -34,9 +34,9 @@ class Connector(object):
         """
         Flag that indicates if session.connect() was successful.
 
-        :return: True if cortile binary exists, False otherwise
+        :return: True if cortile binary is running, False otherwise
         """
-        return self.session.connected
+        return self.process.running and self.session.connected
 
     @property
     def exit(self) -> bool:
@@ -64,7 +64,7 @@ class Connector(object):
         self.log.info(f'Register listener: {len(self.listener)}')
         self.listener.append(callback)
 
-    def method(self, name: str, *args: object) -> bool:
+    def method(self, name: str, *args: Tuple[str, ...]) -> bool:
         """
         Execute cortile method with arguments.
 
@@ -105,14 +105,16 @@ class Connector(object):
         """
         return self.session.help().Data.Message
 
-    def update(self, result: Dict | None) -> None:
+    def observe(self, result: Dict | None) -> None:
         """
-        Internal function to update cached properties.
+        Internal function to update cached properties or disconnect client.
 
         :param result: Dictionary with success or error data
         """
         if not result or result.Type != 'Property':
             return
+        if result.Name == 'Disconnect':
+            return self.close()
         self.log.info(f'{result.Type}: {result.Name} update')
         self.properties[result.Name] = result.Data
 
