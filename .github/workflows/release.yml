@@ -41,12 +41,12 @@ jobs:
           name: python-package
           path: dist/cortile*
 
-  pypi-test:
+  pypi:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: pypi-test
-      url: https://test.pypi.org/p/cortile
+      name: pypi
+      url: https://pypi.org/p/cortile
     permissions:
       id-token: write
     steps:
@@ -58,5 +58,3 @@ jobs:
 
       - name: Publish Package
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/

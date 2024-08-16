@@ -848,14 +848,14 @@ To help you get started quickly, example scripts are available in the [examples]
 These scripts demonstrate various use cases and can serve as a practical guide to utilizing the full potential of cortile through python.
 Feel free to explore these resources to make the most out of your cortile setup.
 
-## Integrating [![integrating](https://img.shields.io/github/go-mod/go-version/leukipp/cortile?label=go&style=flat-square)](#integrating-)
+## Integration [![integration](https://img.shields.io/github/go-mod/go-version/leukipp/cortile?label=go&style=flat-square)](#integration-)
 You can execute a script on demand or trigger it by any other external means.
 To ensure a script is activated every time cortile starts, place it in a folder named addons within the cortile configuration directory, e.g. `~/.config/cortile/addons/`.
 
 Any executable script (`chmod +x script_name.py`) in this folder will automatically run when cortile starts.
 The script will execute with the same user permission and environment as cortile, so python and additional required dependencies (`pip packages`) must be available in this environment.
 
-Any output from python’s `print()` function or error logs within the script will appear in the terminal where cortile is running. Depending on the log level, additional log messages from the script will be written to the system log (`cat /var/log/syslog`).
+The output from python’s `print()` function and error logs within the script will appear in the terminal where cortile is running. Depending on the log level, additional messages from the script will be written to the system log (`cat /var/log/syslog`).
 
 ### Compatibility
 Since the python integration relies on internal cortile properties and the provided interfaces via dbus, it’s crucial that all custom scripts are compatible with the running cortile instance.

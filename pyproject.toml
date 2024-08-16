@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cortile"
-version = "0.0.5"
+version = "1.0.0"
 description = "Python bindings for the linux auto tiling manager cortile."
 readme = "README.md"
 license = { file = "LICENSE" }
