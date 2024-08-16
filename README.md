@@ -7,10 +7,10 @@ Python bindings for the linux auto tiling manager cortile.
 Cortile provides auto tiling for XFCE, LXDE, LXQt, KDE and GNOME (Mate, Deepin, Cinnamon, Budgie) based desktop environments.
 There is build in support for Openbox, Fluxbox, IceWM, Xfwm, KWin, Marco, Muffin, Mutter and other EWMH compliant window managers using the X11 window system.
 
-This package only provides the python bindings and does not contain the cortile [release](https://github.com/leukipp/cortile/releases) binary.
-To use this package, you need to install the binary from the main repository. For more details, please refer to the cortile [README](https://github.com/leukipp/cortile?tab=readme-ov-file#addons) file.
+This package only provides the python bindings and does not contain the cortile release binary.
+To use this package, you need to install the [binary](https://github.com/leukipp/cortile/releases) from the main repository. For more details, please refer to the cortile [README.md](https://github.com/leukipp/cortile?tab=readme-ov-file#addons) file.
 
-## Installation [![installation](https://img.shields.io/badge/api-%20python%20-red?style=flat-square)](#installation-)
+## Installation [![installation](https://img.shields.io/badge/pip-%20Python%20-red?style=flat-square)](#installation-)
 To get started, install it via `pip`:
 ```bash
 pip install cortile
@@ -27,11 +27,11 @@ ct = Cortile()
 ...
 ```
 
-## Documentation [![documentation](https://img.shields.io/badge/class-%20cortile%20-yellow?style=flat-square)](#documentation-)
+## Documentation [![documentation](https://img.shields.io/badge/docstring-%20PEP%20257%20-yellow?style=flat-square)](#documentation-)
+Documentation is provided through docstring literals, which appear immediately after the definition of a method, class, or module.
+While all methods and classes include docstrings, the primary interface for interacting with a running cortile instance is the `Cortile()` class, which is documented here:
 
-```python
-class Cortile(object)
-```
+<details><summary>class Cortile()</summary><div>
 
 <a id="cortile/cortile.Cortile.__init__"></a>
 
@@ -840,18 +840,37 @@ Execute the 'reset' action.
 
 True if successful, False otherwise
 
-## Examples [![examples](https://img.shields.io/badge/scripts-%20examples%20-blue?style=flat-square)](#examples-)
+</div></details>
+
+## Examples [![examples](https://img.shields.io/badge/scripts-%20Examples%20-blue?style=flat-square)](#examples-)
 To help you get started quickly, example scripts are available in the [examples](https://github.com/leukipp/cortile-addons/tree/main/examples) folder.
 
 These scripts demonstrate various use cases and can serve as a practical guide to utilizing the full potential of cortile through python.
 Feel free to explore these resources to make the most out of your cortile setup.
 
+## Integrating [![integrating](https://img.shields.io/github/go-mod/go-version/leukipp/cortile?label=go&style=flat-square)](#integrating-)
+You can execute a script on demand or trigger it by any other external means.
+To ensure a script is activated every time cortile starts, place it in a folder named addons within the cortile configuration directory, e.g. `~/.config/cortile/addons/`.
+
+Any executable script (`chmod +x script_name.py`) in this folder will automatically run when cortile starts.
+The script will execute with the same user permission and environment as cortile, so python and additional required dependencies (`pip packages`) must be available in this environment.
+
+Any output from python’s `print()` function or error logs within the script will appear in the terminal where cortile is running. Depending on the log level, additional log messages from the script will be written to the system log (`cat /var/log/syslog`).
+
+### Compatibility
+Since the python integration relies on internal cortile properties and the provided interfaces via dbus, it’s crucial that all custom scripts are compatible with the running cortile instance.
+
+This table provides the officially supported combination of versions:
+| Addons (Python) | Cortile (go) |
+| --------------- | ------------ |
+| v1.0.0          | v2.5.1       |
+
 ## Contributing [![contributing](https://img.shields.io/github/issues-pr-closed/leukipp/cortile-addons?style=flat-square)](#contributing-)
 Contributions into the [examples](https://github.com/leukipp/cortile-addons/tree/main/examples) folder are greatly welcomed!
 
 If you have a script that could benefit the community, please submit a pull request.
-Include a brief explanation of the script in the header comment (refer to other scripts for guidance).
-The script should be runnable or at least serve as a useful skeleton for others.
+Include a brief explanation of the script in the header comment (refer to existing files for guidance).
+The script should be runnable or serve at least as a useful skeleton for others.
 
 ## License [![license](https://img.shields.io/github/license/leukipp/cortile-addons?style=flat-square)](#license-)
 [MIT](https://github.com/leukipp/cortile-addons/blob/main/LICENSE)
