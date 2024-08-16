@@ -8,7 +8,7 @@ Cortile provides auto tiling for XFCE, LXDE, LXQt, KDE and GNOME (Mate, Deepin, 
 There is build in support for Openbox, Fluxbox, IceWM, Xfwm, KWin, Marco, Muffin, Mutter and other EWMH compliant window managers using the X11 window system.
 
 This package only provides the python bindings and does not contain the cortile release binary.
-To use this package, you need to install the [binary](https://github.com/leukipp/cortile/releases) from the main repository. For more details, please refer to the cortile [README.md](https://github.com/leukipp/cortile?tab=readme-ov-file#addons) file.
+To use this package, you need to install the [binary](https://github.com/leukipp/cortile/releases) from the main repository. For more details, please refer to the cortile [README.md](https://github.com/leukipp/cortile?tab=readme-ov-file#addons-) file.
 
 ## Installation [![installation](https://img.shields.io/badge/pip-%20Python%20-red?style=flat-square)](#installation-)
 To get started, install it via `pip`:
