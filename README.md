@@ -159,19 +159,19 @@ Get information of clients on the current active screen.
 
 Iterator of tracked clients on the current screen
 
-<a id="cortile/cortile.Cortile.get_active_workspace"></a>
+<a id="cortile/cortile.Cortile.get_active_desktop"></a>
 
-#### get\_active\_workspace
+#### get\_active\_desktop
 
 ```python
-def get_active_workspace() -> int | None
+def get_active_desktop() -> int | None
 ```
 
-Get the current active workspace.
+Get the current active desktop.
 
 **Returns**:
 
-Active workspace index or None
+Active desktop index or None
 
 <a id="cortile/cortile.Cortile.get_active_screen"></a>
 
@@ -187,19 +187,19 @@ Get the current active screen.
 
 Active screen index or None
 
-<a id="cortile/cortile.Cortile.get_workspace_count"></a>
+<a id="cortile/cortile.Cortile.get_desktop_count"></a>
 
-#### get\_workspace\_count
+#### get\_desktop\_count
 
 ```python
-def get_workspace_count() -> int | None
+def get_desktop_count() -> int | None
 ```
 
-Get the number of workspaces.
+Get the number of desktops.
 
 **Returns**:
 
-Number of workspaces or None
+Number of desktops or None
 
 <a id="cortile/cortile.Cortile.get_screen_count"></a>
 
@@ -215,19 +215,19 @@ Get the number of screens.
 
 Number of screens or None
 
-<a id="cortile/cortile.Cortile.get_workspace_dimensions"></a>
+<a id="cortile/cortile.Cortile.get_desktop_dimensions"></a>
 
-#### get\_workspace\_dimensions
+#### get\_desktop\_dimensions
 
 ```python
-def get_workspace_dimensions() -> List[Dict]
+def get_desktop_dimensions() -> List[Dict]
 ```
 
-Get the dimensions of all workspaces.
+Get the dimensions of all desktops.
 
 **Returns**:
 
-LTR sorted list of workspace dimensions or None
+LTR sorted list of desktop dimensions or None
 
 <a id="cortile/cortile.Cortile.get_screen_dimensions"></a>
 
@@ -373,7 +373,7 @@ True if successful, False otherwise
 def action_execute_enable(desktop: int, screen: int) -> bool
 ```
 
-Execute the 'enable' action.
+Execute the `enable` action.
 
 **Arguments**:
 
@@ -392,7 +392,7 @@ True if successful, False otherwise
 def action_execute_disable(desktop: int, screen: int) -> bool
 ```
 
-Execute the 'disable' action.
+Execute the `disable` action.
 
 **Arguments**:
 
@@ -411,7 +411,7 @@ True if successful, False otherwise
 def action_execute_toggle(desktop: int, screen: int) -> bool
 ```
 
-Execute the 'toggle' action.
+Execute the `toggle` action.
 
 **Arguments**:
 
@@ -430,7 +430,7 @@ True if successful, False otherwise
 def action_execute_decoration(desktop: int, screen: int) -> bool
 ```
 
-Execute the 'decoration' action.
+Execute the `decoration` action.
 
 **Arguments**:
 
@@ -449,368 +449,7 @@ True if successful, False otherwise
 def action_execute_restore(desktop: int, screen: int) -> bool
 ```
 
-Execute the 'restore' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_cycle_next"></a>
-
-#### action\_execute\_cycle\_next
-
-```python
-def action_execute_cycle_next(desktop: int, screen: int) -> bool
-```
-
-Execute the 'cycle_next' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_cycle_previous"></a>
-
-#### action\_execute\_cycle\_previous
-
-```python
-def action_execute_cycle_previous(desktop: int, screen: int) -> bool
-```
-
-Execute the 'cycle_previous' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_layout_vertical_left"></a>
-
-#### action\_execute\_layout\_vertical\_left
-
-```python
-def action_execute_layout_vertical_left(desktop: int, screen: int) -> bool
-```
-
-Execute the 'layout_vertical_left' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_layout_vertical_right"></a>
-
-#### action\_execute\_layout\_vertical\_right
-
-```python
-def action_execute_layout_vertical_right(desktop: int, screen: int) -> bool
-```
-
-Execute the 'layout_vertical_right' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_layout_horizontal_top"></a>
-
-#### action\_execute\_layout\_horizontal\_top
-
-```python
-def action_execute_layout_horizontal_top(desktop: int, screen: int) -> bool
-```
-
-Execute the 'layout_horizontal_top' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_layout_horizontal_bottom"></a>
-
-#### action\_execute\_layout\_horizontal\_bottom
-
-```python
-def action_execute_layout_horizontal_bottom(desktop: int, screen: int) -> bool
-```
-
-Execute the 'layout_horizontal_bottom' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_layout_maximized"></a>
-
-#### action\_execute\_layout\_maximized
-
-```python
-def action_execute_layout_maximized(desktop: int, screen: int) -> bool
-```
-
-Execute the 'layout_maximized' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_layout_fullscreen"></a>
-
-#### action\_execute\_layout\_fullscreen
-
-```python
-def action_execute_layout_fullscreen(desktop: int, screen: int) -> bool
-```
-
-Execute the 'layout_fullscreen' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_master_make"></a>
-
-#### action\_execute\_master\_make
-
-```python
-def action_execute_master_make(desktop: int, screen: int) -> bool
-```
-
-Execute the 'master_make' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_master_make_next"></a>
-
-#### action\_execute\_master\_make\_next
-
-```python
-def action_execute_master_make_next(desktop: int, screen: int) -> bool
-```
-
-Execute the 'master_make_next' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_master_make_previous"></a>
-
-#### action\_execute\_master\_make\_previous
-
-```python
-def action_execute_master_make_previous(desktop: int, screen: int) -> bool
-```
-
-Execute the 'master_make_previous' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_master_increase"></a>
-
-#### action\_execute\_master\_increase
-
-```python
-def action_execute_master_increase(desktop: int, screen: int) -> bool
-```
-
-Execute the 'master_increase' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_master_decrease"></a>
-
-#### action\_execute\_master\_decrease
-
-```python
-def action_execute_master_decrease(desktop: int, screen: int) -> bool
-```
-
-Execute the 'master_decrease' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_slave_increase"></a>
-
-#### action\_execute\_slave\_increase
-
-```python
-def action_execute_slave_increase(desktop: int, screen: int) -> bool
-```
-
-Execute the 'slave_increase' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_slave_decrease"></a>
-
-#### action\_execute\_slave\_decrease
-
-```python
-def action_execute_slave_decrease(desktop: int, screen: int) -> bool
-```
-
-Execute the 'slave_decrease' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_proportion_increase"></a>
-
-#### action\_execute\_proportion\_increase
-
-```python
-def action_execute_proportion_increase(desktop: int, screen: int) -> bool
-```
-
-Execute the 'proportion_increase' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_proportion_decrease"></a>
-
-#### action\_execute\_proportion\_decrease
-
-```python
-def action_execute_proportion_decrease(desktop: int, screen: int) -> bool
-```
-
-Execute the 'proportion_decrease' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_window_next"></a>
-
-#### action\_execute\_window\_next
-
-```python
-def action_execute_window_next(desktop: int, screen: int) -> bool
-```
-
-Execute the 'window_next' action.
-
-**Arguments**:
-
-- `desktop`: Index of the desktop
-- `screen`: Index of the screen
-
-**Returns**:
-
-True if successful, False otherwise
-
-<a id="cortile/cortile.Cortile.action_execute_window_previous"></a>
-
-#### action\_execute\_window\_previous
-
-```python
-def action_execute_window_previous(desktop: int, screen: int) -> bool
-```
-
-Execute the 'window_previous' action.
+Execute the `restore` action.
 
 **Arguments**:
 
@@ -829,7 +468,406 @@ True if successful, False otherwise
 def action_execute_reset(desktop: int, screen: int) -> bool
 ```
 
-Execute the 'reset' action.
+Execute the `reset` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_cycle_next"></a>
+
+#### action\_execute\_cycle\_next
+
+```python
+def action_execute_cycle_next(desktop: int, screen: int) -> bool
+```
+
+Execute the `cycle_next` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_cycle_previous"></a>
+
+#### action\_execute\_cycle\_previous
+
+```python
+def action_execute_cycle_previous(desktop: int, screen: int) -> bool
+```
+
+Execute the `cycle_previous` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_layout_vertical_left"></a>
+
+#### action\_execute\_layout\_vertical\_left
+
+```python
+def action_execute_layout_vertical_left(desktop: int, screen: int) -> bool
+```
+
+Execute the `layout_vertical_left` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_layout_vertical_right"></a>
+
+#### action\_execute\_layout\_vertical\_right
+
+```python
+def action_execute_layout_vertical_right(desktop: int, screen: int) -> bool
+```
+
+Execute the `layout_vertical_right` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_layout_horizontal_top"></a>
+
+#### action\_execute\_layout\_horizontal\_top
+
+```python
+def action_execute_layout_horizontal_top(desktop: int, screen: int) -> bool
+```
+
+Execute the `layout_horizontal_top` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_layout_horizontal_bottom"></a>
+
+#### action\_execute\_layout\_horizontal\_bottom
+
+```python
+def action_execute_layout_horizontal_bottom(desktop: int, screen: int) -> bool
+```
+
+Execute the `layout_horizontal_bottom` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_layout_maximized"></a>
+
+#### action\_execute\_layout\_maximized
+
+```python
+def action_execute_layout_maximized(desktop: int, screen: int) -> bool
+```
+
+Execute the `layout_maximized` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_layout_fullscreen"></a>
+
+#### action\_execute\_layout\_fullscreen
+
+```python
+def action_execute_layout_fullscreen(desktop: int, screen: int) -> bool
+```
+
+Execute the `layout_fullscreen` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_slave_increase"></a>
+
+#### action\_execute\_slave\_increase
+
+```python
+def action_execute_slave_increase(desktop: int, screen: int) -> bool
+```
+
+Execute the `slave_increase` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_slave_decrease"></a>
+
+#### action\_execute\_slave\_decrease
+
+```python
+def action_execute_slave_decrease(desktop: int, screen: int) -> bool
+```
+
+Execute the `slave_decrease` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_master_increase"></a>
+
+#### action\_execute\_master\_increase
+
+```python
+def action_execute_master_increase(desktop: int, screen: int) -> bool
+```
+
+Execute the `master_increase` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_master_decrease"></a>
+
+#### action\_execute\_master\_decrease
+
+```python
+def action_execute_master_decrease(desktop: int, screen: int) -> bool
+```
+
+Execute the `master_decrease` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_window_next"></a>
+
+#### action\_execute\_window\_next
+
+```python
+def action_execute_window_next(desktop: int, screen: int) -> bool
+```
+
+Execute the `window_next` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_window_previous"></a>
+
+#### action\_execute\_window\_previous
+
+```python
+def action_execute_window_previous(desktop: int, screen: int) -> bool
+```
+
+Execute the `window_previous` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_screen_next"></a>
+
+#### action\_execute\_screen\_next
+
+```python
+def action_execute_screen_next(desktop: int, screen: int) -> bool
+```
+
+Execute the `screen_next` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_screen_previous"></a>
+
+#### action\_execute\_screen\_previous
+
+```python
+def action_execute_screen_previous(desktop: int, screen: int) -> bool
+```
+
+Execute the `screen_previous` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_master_make"></a>
+
+#### action\_execute\_master\_make
+
+```python
+def action_execute_master_make(desktop: int, screen: int) -> bool
+```
+
+Execute the `master_make` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_master_make_next"></a>
+
+#### action\_execute\_master\_make\_next
+
+```python
+def action_execute_master_make_next(desktop: int, screen: int) -> bool
+```
+
+Execute the `master_make_next` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_master_make_previous"></a>
+
+#### action\_execute\_master\_make\_previous
+
+```python
+def action_execute_master_make_previous(desktop: int, screen: int) -> bool
+```
+
+Execute the `master_make_previous` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_proportion_increase"></a>
+
+#### action\_execute\_proportion\_increase
+
+```python
+def action_execute_proportion_increase(desktop: int, screen: int) -> bool
+```
+
+Execute the `proportion_increase` action.
+
+**Arguments**:
+
+- `desktop`: Index of the desktop
+- `screen`: Index of the screen
+
+**Returns**:
+
+True if successful, False otherwise
+
+<a id="cortile/cortile.Cortile.action_execute_proportion_decrease"></a>
+
+#### action\_execute\_proportion\_decrease
+
+```python
+def action_execute_proportion_decrease(desktop: int, screen: int) -> bool
+```
+
+Execute the `proportion_decrease` action.
 
 **Arguments**:
 
@@ -864,6 +902,7 @@ This table provides the officially supported combination of versions:
 | Addons (Python) | Cortile (go) |
 | --------------- | ------------ |
 | v1.0.0          | v2.5.1       |
+| v1.0.1          | v2.5.1       |
 
 ## Contributing [![contributing](https://img.shields.io/github/issues-pr-closed/leukipp/cortile-addons?style=flat-square)](#contributing-)
 Contributions into the [examples](https://github.com/leukipp/cortile-addons/tree/main/examples) folder are greatly welcomed!
