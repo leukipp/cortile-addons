@@ -88,7 +88,7 @@ def handle_clients_change(ct: Cortile, event: Dict, args: List[str]):
             # this moves the focus to the window
             ct.window_activate(id=window_id)
 
-            # the focused window will be made a master, the desktop/workspace and screen index must be provided
+            # the focused window will be made a master, the desktop and screen index must be provided
             ct.action_execute_master_make(desktop=window_location.Desktop, screen=window_location.Screen)
 
             # update the global event time object

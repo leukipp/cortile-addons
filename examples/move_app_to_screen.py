@@ -6,7 +6,7 @@ This script binds hotkeys in the format <ctrl>+<alt>+[SCREEN_INDEX], where SCREE
 represents the index of one of the connected screens [see TODO]. The screens are ordered
 from left to right (LTR) based on their physical arrangement. When a hotkey is pressed,
 the currently active (focused) window will move to the target screen on the same
-desktop (workspace). Tiling must be enabled on the source and target screens.
+workspace. Tiling must be enabled on the source and target screens.
 
 Authors:
     * https://github.com/leukipp/

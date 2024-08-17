@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-"""Automatically open applications on specific workspace.
+"""Automatically open applications on specific desktop.
 
 When cortile is running and a pre-defined application is launched,
-it will automatically relocate the application to a designated workspace.
+it will automatically relocate the application to a designated desktop.
 This behavior is determined by the applications class name(s). Both the class
-name(s) and the target workspace are hardcoded into the system [see TODO]. This
-ensures that each application is consistently moved to its appropriate workspace.
+name(s) and the target desktop are hardcoded into the system [see TODO]. This
+ensures that each application is consistently moved to its appropriate desktop.
 
 Authors:
     * https://github.com/leukipp/
@@ -19,7 +19,7 @@ Dependencies:
 Usage:
     Run the python application::
 
-        $ python move_app_to_workspace.py
+        $ python move_app_to_desktop.py
 
 """
 
@@ -83,7 +83,7 @@ def handle_clients_change(ct: Cortile, event: Dict):
         # lets check if one of the clients match and they have just been recently (in the last 3s) added
         if window_class in window_classes and window_lifetime.seconds < 3:
 
-            # move the window to the pre-defined desktop/workspace index
+            # move the window to the pre-defined desktop index
             if window_location.Desktop != desktop_index:
                 ct.window_to_desktop(id=window_id, desktop=desktop_index)
 

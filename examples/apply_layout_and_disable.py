@@ -3,7 +3,7 @@
 """Apply a layout and disable tiling afterwards.
 
 You can use this script in cases where you only want to maximize
-windows once and disable tiling afterwards. The active workspace and
+windows once and disable tiling afterwards. The active desktop and
 screen index is determined by the current position of the mouse. At first
 tiling will be enabled, then maximization will be applied [see TODO].
 Afterwards tiling is disabled and windows are in stacking mode again.
@@ -32,8 +32,8 @@ def main():
     # init a cortile python object and connect to the running cortile process
     ct = Cortile()
 
-    # retrieve current active desktop/workspace index
-    desktop_index = ct.get_active_workspace()
+    # retrieve current active desktop index
+    desktop_index = ct.get_active_desktop()
 
     # retrieve current active screen index
     screen_index = ct.get_active_screen()

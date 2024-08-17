@@ -60,8 +60,8 @@ def key_callback_j(ct: Cortile):
 
 def apply_layout(ct: Cortile, name: str):
 
-    # retrieve current active desktop/workspace index
-    desktop_index = ct.get_active_workspace()
+    # retrieve current active desktop index
+    desktop_index = ct.get_active_desktop()
 
     # retrieve current active screen index
     screen_index = ct.get_active_screen()

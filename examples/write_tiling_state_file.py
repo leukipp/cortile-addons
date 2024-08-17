@@ -62,8 +62,8 @@ def handle_workspace_update(ct: Cortile):
 
     # initialize dictionary with default values, key is file path and value the "active_layout_name;decoration_state"
     for screen_index in range(ct.get_screen_count()):
-        for workspace_index in range(ct.get_workspace_count()):
-            file_name = f'screen{screen_index}-desktop{workspace_index}.txt'
+        for desktop_index in range(ct.get_desktop_count()):
+            file_name = f'screen{screen_index}-desktop{desktop_index}.txt'
             file_path = os.path.join(export_folder, file_name)
 
             # initialize files dictionary

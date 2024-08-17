@@ -82,12 +82,12 @@ def function_factory(ct: Cortile, window_id: int):
 def master_make(ct: Cortile, window_id: int):
 
     # retrieve current active desktop and screen index
-    active_desk = ct.get_active_workspace()
+    active_desktop = ct.get_active_desktop()
     active_screen = ct.get_active_screen()
 
     # activate the clicked client and make it a master window
     ct.window_activate(id=window_id)
-    ct.action_execute_master_make(desktop=active_desk, screen=active_screen)
+    ct.action_execute_master_make(desktop=active_desktop, screen=active_screen)
 
 
 if __name__ == '__main__':

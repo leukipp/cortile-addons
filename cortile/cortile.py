@@ -110,11 +110,11 @@ class Cortile(object):
                 yield client
         return
 
-    def get_active_workspace(self) -> int | None:
+    def get_active_desktop(self) -> int | None:
         """
-        Get the current active workspace.
+        Get the current active desktop.
 
-        :return: Active workspace index or None
+        :return: Active desktop index or None
         """
         workplace = self.connector.property('Workplace')
         if not workplace:
@@ -132,11 +132,11 @@ class Cortile(object):
             return None
         return workplace.CurrentScreen
 
-    def get_workspace_count(self) -> int | None:
+    def get_desktop_count(self) -> int | None:
         """
-        Get the number of workspaces.
+        Get the number of desktops.
 
-        :return: Number of workspaces or None
+        :return: Number of desktops or None
         """
         workplace = self.connector.property('Workplace')
         if not workplace:
@@ -154,11 +154,11 @@ class Cortile(object):
             return None
         return workplace.ScreenCount
 
-    def get_workspace_dimensions(self) -> List[Dict]:
+    def get_desktop_dimensions(self) -> List[Dict]:
         """
-        Get the dimensions of all workspaces.
+        Get the dimensions of all desktops.
 
-        :return: LTR sorted list of workspace dimensions or None
+        :return: LTR sorted list of desktop dimensions or None
         """
         workplace = self.connector.property('Workplace')
         if not workplace:
@@ -254,7 +254,7 @@ class Cortile(object):
 
     def action_execute_enable(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'enable' action.
+        Execute the `enable` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -265,7 +265,7 @@ class Cortile(object):
 
     def action_execute_disable(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'disable' action.
+        Execute the `disable` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -276,7 +276,7 @@ class Cortile(object):
 
     def action_execute_toggle(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'toggle' action.
+        Execute the `toggle` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -287,7 +287,7 @@ class Cortile(object):
 
     def action_execute_decoration(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'decoration' action.
+        Execute the `decoration` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -298,7 +298,7 @@ class Cortile(object):
 
     def action_execute_restore(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'restore' action.
+        Execute the `restore` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -307,9 +307,20 @@ class Cortile(object):
         """
         return self.connector.method('ActionExecute', 'restore', desktop, screen)
 
+    def action_execute_reset(self, desktop: int, screen: int) -> bool:
+        """
+        Execute the `reset` action.
+
+        :param desktop: Index of the desktop
+        :param screen: Index of the screen
+
+        :return: True if successful, False otherwise
+        """
+        return self.connector.method('ActionExecute', 'reset', desktop, screen)
+
     def action_execute_cycle_next(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'cycle_next' action.
+        Execute the `cycle_next` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -320,7 +331,7 @@ class Cortile(object):
 
     def action_execute_cycle_previous(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'cycle_previous' action.
+        Execute the `cycle_previous` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -331,7 +342,7 @@ class Cortile(object):
 
     def action_execute_layout_vertical_left(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'layout_vertical_left' action.
+        Execute the `layout_vertical_left` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -342,7 +353,7 @@ class Cortile(object):
 
     def action_execute_layout_vertical_right(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'layout_vertical_right' action.
+        Execute the `layout_vertical_right` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -353,7 +364,7 @@ class Cortile(object):
 
     def action_execute_layout_horizontal_top(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'layout_horizontal_top' action.
+        Execute the `layout_horizontal_top` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -364,7 +375,7 @@ class Cortile(object):
 
     def action_execute_layout_horizontal_bottom(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'layout_horizontal_bottom' action.
+        Execute the `layout_horizontal_bottom` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -375,7 +386,7 @@ class Cortile(object):
 
     def action_execute_layout_maximized(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'layout_maximized' action.
+        Execute the `layout_maximized` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -386,7 +397,7 @@ class Cortile(object):
 
     def action_execute_layout_fullscreen(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'layout_fullscreen' action.
+        Execute the `layout_fullscreen` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -395,64 +406,9 @@ class Cortile(object):
         """
         return self.connector.method('ActionExecute', 'layout_fullscreen', desktop, screen)
 
-    def action_execute_master_make(self, desktop: int, screen: int) -> bool:
-        """
-        Execute the 'master_make' action.
-
-        :param desktop: Index of the desktop
-        :param screen: Index of the screen
-
-        :return: True if successful, False otherwise
-        """
-        return self.connector.method('ActionExecute', 'master_make', desktop, screen)
-
-    def action_execute_master_make_next(self, desktop: int, screen: int) -> bool:
-        """
-        Execute the 'master_make_next' action.
-
-        :param desktop: Index of the desktop
-        :param screen: Index of the screen
-
-        :return: True if successful, False otherwise
-        """
-        return self.connector.method('ActionExecute', 'master_make_next', desktop, screen)
-
-    def action_execute_master_make_previous(self, desktop: int, screen: int) -> bool:
-        """
-        Execute the 'master_make_previous' action.
-
-        :param desktop: Index of the desktop
-        :param screen: Index of the screen
-
-        :return: True if successful, False otherwise
-        """
-        return self.connector.method('ActionExecute', 'master_make_previous', desktop, screen)
-
-    def action_execute_master_increase(self, desktop: int, screen: int) -> bool:
-        """
-        Execute the 'master_increase' action.
-
-        :param desktop: Index of the desktop
-        :param screen: Index of the screen
-
-        :return: True if successful, False otherwise
-        """
-        return self.connector.method('ActionExecute', 'master_increase', desktop, screen)
-
-    def action_execute_master_decrease(self, desktop: int, screen: int) -> bool:
-        """
-        Execute the 'master_decrease' action.
-
-        :param desktop: Index of the desktop
-        :param screen: Index of the screen
-
-        :return: True if successful, False otherwise
-        """
-        return self.connector.method('ActionExecute', 'master_decrease', desktop, screen)
-
     def action_execute_slave_increase(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'slave_increase' action.
+        Execute the `slave_increase` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -463,7 +419,7 @@ class Cortile(object):
 
     def action_execute_slave_decrease(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'slave_decrease' action.
+        Execute the `slave_decrease` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -472,31 +428,31 @@ class Cortile(object):
         """
         return self.connector.method('ActionExecute', 'slave_decrease', desktop, screen)
 
-    def action_execute_proportion_increase(self, desktop: int, screen: int) -> bool:
+    def action_execute_master_increase(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'proportion_increase' action.
+        Execute the `master_increase` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'proportion_increase', desktop, screen)
+        return self.connector.method('ActionExecute', 'master_increase', desktop, screen)
 
-    def action_execute_proportion_decrease(self, desktop: int, screen: int) -> bool:
+    def action_execute_master_decrease(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'proportion_decrease' action.
+        Execute the `master_decrease` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'proportion_decrease', desktop, screen)
+        return self.connector.method('ActionExecute', 'master_decrease', desktop, screen)
 
     def action_execute_window_next(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'window_next' action.
+        Execute the `window_next` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -507,7 +463,7 @@ class Cortile(object):
 
     def action_execute_window_previous(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'window_previous' action.
+        Execute the `window_previous` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
@@ -516,13 +472,79 @@ class Cortile(object):
         """
         return self.connector.method('ActionExecute', 'window_previous', desktop, screen)
 
-    def action_execute_reset(self, desktop: int, screen: int) -> bool:
+    def action_execute_screen_next(self, desktop: int, screen: int) -> bool:
         """
-        Execute the 'reset' action.
+        Execute the `screen_next` action.
 
         :param desktop: Index of the desktop
         :param screen: Index of the screen
 
         :return: True if successful, False otherwise
         """
-        return self.connector.method('ActionExecute', 'reset', desktop, screen)
+        return self.connector.method('ActionExecute', 'screen_next', desktop, screen)
+
+    def action_execute_screen_previous(self, desktop: int, screen: int) -> bool:
+        """
+        Execute the `screen_previous` action.
+
+        :param desktop: Index of the desktop
+        :param screen: Index of the screen
+
+        :return: True if successful, False otherwise
+        """
+        return self.connector.method('ActionExecute', 'screen_previous', desktop, screen)
+
+    def action_execute_master_make(self, desktop: int, screen: int) -> bool:
+        """
+        Execute the `master_make` action.
+
+        :param desktop: Index of the desktop
+        :param screen: Index of the screen
+
+        :return: True if successful, False otherwise
+        """
+        return self.connector.method('ActionExecute', 'master_make', desktop, screen)
+
+    def action_execute_master_make_next(self, desktop: int, screen: int) -> bool:
+        """
+        Execute the `master_make_next` action.
+
+        :param desktop: Index of the desktop
+        :param screen: Index of the screen
+
+        :return: True if successful, False otherwise
+        """
+        return self.connector.method('ActionExecute', 'master_make_next', desktop, screen)
+
+    def action_execute_master_make_previous(self, desktop: int, screen: int) -> bool:
+        """
+        Execute the `master_make_previous` action.
+
+        :param desktop: Index of the desktop
+        :param screen: Index of the screen
+
+        :return: True if successful, False otherwise
+        """
+        return self.connector.method('ActionExecute', 'master_make_previous', desktop, screen)
+
+    def action_execute_proportion_increase(self, desktop: int, screen: int) -> bool:
+        """
+        Execute the `proportion_increase` action.
+
+        :param desktop: Index of the desktop
+        :param screen: Index of the screen
+
+        :return: True if successful, False otherwise
+        """
+        return self.connector.method('ActionExecute', 'proportion_increase', desktop, screen)
+
+    def action_execute_proportion_decrease(self, desktop: int, screen: int) -> bool:
+        """
+        Execute the `proportion_decrease` action.
+
+        :param desktop: Index of the desktop
+        :param screen: Index of the screen
+
+        :return: True if successful, False otherwise
+        """
+        return self.connector.method('ActionExecute', 'proportion_decrease', desktop, screen)
