@@ -86,7 +86,7 @@ class Connector(object):
         :param name: Name of the cortile property
         :param cached: Use the cached value from internal listener, default is True
 
-        :return: Dictionary with success data or None on failure
+        :return: Dictionary with success data or None
         """
         self.log.info(f'Property: {name}')
         if name not in self.properties or not cached:

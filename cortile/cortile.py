@@ -158,7 +158,7 @@ class Cortile(object):
         """
         Get the dimensions of all desktops.
 
-        :return: LTR sorted list of desktop dimensions or None
+        :return: LTR sorted list of desktop dimensions
         """
         workplace = self.connector.property('Workplace')
         if not workplace:
@@ -169,7 +169,7 @@ class Cortile(object):
         """
         Get the dimensions of all screens.
 
-        :return: LTR sorted list of screen dimensions or None
+        :return: LTR sorted list of screen dimensions
         """
         workplace = self.connector.property('Workplace')
         if not workplace:
@@ -180,7 +180,7 @@ class Cortile(object):
         """
         Get all the clients information.
 
-        :return: List of tracked clients or None
+        :return: List of tracked clients
         """
         clients = self.connector.property('Clients')
         if not clients:
