@@ -903,6 +903,7 @@ This table provides the officially supported combination of versions:
 | --------------- | ------------ |
 | v1.0.0          | v2.5.1       |
 | v1.0.1          | v2.5.1       |
+| v1.0.1          | v2.5.2       |
 
 ## Contributing [![contributing](https://img.shields.io/github/issues-pr-closed/leukipp/cortile-addons?style=flat-square)](#contributing-)
 Contributions into the [examples](https://github.com/leukipp/cortile-addons/tree/main/examples) folder are greatly welcomed!
